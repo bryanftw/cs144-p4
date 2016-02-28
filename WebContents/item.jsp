@@ -5,36 +5,70 @@
 <html>   
 <head> 
 <title>Item Search</title>
-<meta name="viewport" content="initial-scale=1.0, user-scalable=no" /> 
-<style type="text/css"> 
+
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+<style type="text/css">
   html { height: 100% } 
   body { height: 100%; margin: 0px; padding: 0px } 
-  #map_canvas { height: 100% } 
-</style> 
+  #map-canvas { height: 100%;}
+</style>
 
-<script type="text/javascript" 
-    src="http://maps.google.com/maps/api/js?sensor=false"> 
-</script> 
-
-<script type="text/javascript"> 
-  function initialize() { 
-    var latlng = new google.maps.LatLng(34.063509,-118.44541); 
-    var myOptions = { 
-      zoom: 14, // default is 8  
-      center: latlng, 
-      mapTypeId: google.maps.MapTypeId.ROADMAP 
-    }; 
-    var map = new google.maps.Map(document.getElementById("map_canvas"), 
-        myOptions); 
-  } 
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
+<script>
+  function initialize() {
+    var geocoder;
+    var map;
+    var latlng = new google.maps.LatLng(34.063509,-118.44541);
+	geocoder = new google.maps.Geocoder();
+	var address = '<%=(String)request.getAttribute("location")%>' ;
+	geocoder.geocode( { 'address': address}, function(results, status) {
+	  if (status == google.maps.GeocoderStatus.OK) {
+		var myOptions = {
+		  zoom: 8,
+		  center: results[0].geometry.location
+		};
+		map = new google.maps.Map(document.getElementById('map-canvas'), myOptions);
+		if(!address || address == 'null'){
+		  map.setZoom(2);
+		  map.setCenter(latlng);
+		}
+		else{
+		  var marker = new google.maps.Marker({
+		  map: map,
+		  position: results[0].geometry.location
+		  });
+		}
+	  }
+	  else {			
+		var mapOptions = {
+		  zoom: 2,
+		  center: latlng
+		}
+		map = new google.maps.Map(document.getElementById('map-canvas'), myOptions);		
+	  }
+	});
+  }
+  function codeAddress() {
+    geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status == google.maps.GeocoderStatus.OK) {
+    	map.setCenter(results[0].geometry.location);
+    	map.setZoom(8);
+    	var marker = new google.maps.Marker({
+    		map: map,
+    		position: results[0].geometry.location
+    	});
+      }
+    });
+  }
+google.maps.event.addDomListener(window, 'load', initialize);
 </script>
 
 </head> 
-<body onload="initialize()"> 
+<body> 
   <h2><u>Search for Item ID</u></h2>
-  <form action="/eBay/item" method="GET">
+  <form action="/eBay/item">
     <input name="id" type="text"><br>
-    <input type="submit">
+    <input type="submit" value="Search" onclick="codeAddress()">
   </form>
   <h2>Results:</h2>
   <p>ItemID:<%= request.getAttribute("itemID")%></p>
@@ -71,6 +105,7 @@
   	</tr>
     </c:forEach>
   </table>
+  <p></p>
   <div id="map-canvas"></div> 
 </body> 
 </html>
