@@ -1,11 +1,40 @@
 <html>
-    <head><title>eBay Search</title></head>
+    <head>
+    <style>
+        div.suggestions {
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            border: 1px solid black;
+            position: absolute;
+            z-index: 5;
+            background-color: white;
+        }
+
+        div.suggestions div {
+            cursor: default;
+            padding: 0px 3px;
+        }
+
+        div.suggestions div.current {
+            background-color: #3366cc;
+            color: white;
+        }
+    </style>
+    <title>eBay Search</title></head>
     <body>
-      <form action="search" method="GET">
-         <input name="q" type="text">
-         <input name="numResultsToSkip" type="hidden" value="0">
-         <input name="numResultsToReturn" type="hidden" value="10">
-         <input type="submit">
-      </form>
-  </body>
+        <form action="search" method="GET">
+            <input id="q" name="q" type="text" autocomplete="off">
+            <input name="numResultsToSkip" type="hidden" value="0">
+            <input name="numResultsToReturn" type="hidden" value="10">
+            <input type="submit">
+            <div class="suggestions"></div>
+        </form>
+        <script type="text/javascript" src="autocomplete.js"></script>
+        <script type="text/javascript" src="suggestions.js"></script>
+        <script type="text/javascript">
+            window.onload = function () {
+                var oTextbox = new AutoSuggestControl(document.getElementById("q"), new SuggestionList());
+            }
+        </script>
+    </body>
 </html>
