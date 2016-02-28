@@ -1,5 +1,7 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>  
+
 <!DOCTYPE html> 
-<%@ page import="edu.ucla.cs.cs144.ItemResult" %>
 <html>   
 <head> 
 <title>Item Search</title>
@@ -29,7 +31,8 @@
 
 </head> 
 <body onload="initialize()"> 
-  <form action="item" method="GET">
+  <h2><u>Search for Item ID</u></h2>
+  <form action="/eBay/item" method="GET">
     <input name="id" type="text"><br>
     <input type="submit">
   </form>

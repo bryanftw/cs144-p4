@@ -1,5 +1,6 @@
 package edu.ucla.cs.cs144;
 
+
 import java.io.IOException;
 import java.io.StringReader;
 import javax.servlet.Servlet;
@@ -7,11 +8,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.w3c.dom.Element;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import org.xml.sax.InputSource;
+import java.util.*;
+import org.w3c.dom.*;
+
 
 import edu.ucla.cs.cs144.AuctionSearchClient;
 
@@ -102,11 +104,15 @@ public class ItemServlet extends HttpServlet implements Servlet {
 			request.setAttribute("sellerRating", seller.getAttribute("Rating"));
 	
 			// Set item categories
-			Element[] itemCategories = getElementsByTagNameNR(Item, "Category");
+			Element[] itemCategories = getElementsByTagNameNR(item, "Category");
 			String categories = "";
 			for(int i = 0; i < itemCategories.length; i++) {
-				categories += getElementText(itemCategories[i]);
+				if(i == itemCategories.length - 1)
+					categories += getElementText(itemCategories[i]);
+				else
+					categories += getElementText(itemCategories[i]) + ", ";
 			}
+			request.setAttribute("categories", categories);
 			
 			// Set bid info
 			Element[] bids = getElementsByTagNameNR(getElementByTagNameNR(item, "Bids"), "Bid");
